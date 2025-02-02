@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { date, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { date, pgTable, primaryKey, serial, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 //  Users table
 export const Users = pgTable("users", {
@@ -41,7 +41,8 @@ export const ProjectMembers = pgTable("project-members", {
 });
 
 export const Events = pgTable("events", {
-  id: serial("event-id").primaryKey(),
+  //  random uuid for event id
+  id: uuid("event-id").default(sql`uuid_generate_v4()`).unique(),
   name: text("event-name").notNull(),
   description: text("description").notNull(),
   postedBy: text("posted-by").references(() => Users.id, {
@@ -57,11 +58,15 @@ export const Events = pgTable("events", {
     withTimezone: true,
   }).notNull(),
   eventBanner: text("event-banner"),
+}, (table) => {
+  return [{
+      pk: primaryKey({ columns: [table.postedBy, table.name] }),
+    }];
 });
 
 export const EventAttendees = pgTable("event-attendees", {
   id: serial("attendee-id").primaryKey(),
-  eventId: serial("event-id").references(() => Events.id, {
+  eventId: uuid("event-id").references(() => Events.id, {
     onUpdate: "cascade",
     onDelete: "cascade",
   }),

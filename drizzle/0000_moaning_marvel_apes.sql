@@ -1,17 +1,18 @@
 CREATE TABLE "event-attendees" (
 	"attendee-id" serial PRIMARY KEY NOT NULL,
-	"event-id" serial NOT NULL,
+	"event-id" uuid,
 	"user-id" text
 );
 --> statement-breakpoint
 CREATE TABLE "events" (
-	"event-id" serial PRIMARY KEY NOT NULL,
+	"event-id" uuid DEFAULT uuid_generate_v4(),
 	"event-name" text NOT NULL,
 	"description" text NOT NULL,
 	"posted-by" text,
-	"start-date" date NOT NULL,
-	"end-date" date NOT NULL,
-	"event-banner" text
+	"start-date" timestamp with time zone NOT NULL,
+	"end-date" timestamp with time zone NOT NULL,
+	"event-banner" text,
+	CONSTRAINT "events_event-id_unique" UNIQUE("event-id")
 );
 --> statement-breakpoint
 CREATE TABLE "project-members" (

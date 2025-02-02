@@ -1,5 +1,5 @@
 {
-  "id": "064cb292-7355-4d4a-a79b-697eb1b85204",
+  "id": "07ecb88d-b76d-4d51-894b-9823e6d905d0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -16,9 +16,9 @@
         },
         "event-id": {
           "name": "event-id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "user-id": {
           "name": "user-id",
@@ -68,9 +68,10 @@
       "columns": {
         "event-id": {
           "name": "event-id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "uuid_generate_v4()"
         },
         "event-name": {
           "name": "event-name",
@@ -92,13 +93,13 @@
         },
         "start-date": {
           "name": "start-date",
-          "type": "date",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
         "end-date": {
           "name": "end-date",
-          "type": "date",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
@@ -126,7 +127,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "events_event-id_unique": {
+          "name": "events_event-id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "event-id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
